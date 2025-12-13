@@ -1,49 +1,36 @@
+import pymongo
 import os
 import sys
-import pymongo
-from dotenv import load_dotenv
-from src.exception import MyException
-from src.logger import logging
-
-# Load .env FIRST before any other imports
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '../../.env'), override=True)
+from vehicle_insurance_prediction.constants import DATABASE_NAME, MONGODB_URL_KEY
+from vehicle_insurance_prediction.logger import logging
+from vehicle_insurance_prediction.exception import MyException
 
 class MongoDBClient:
-    """MongoDB client connection wrapper."""
-    
-    def __init__(self, database_name: str = None):
+    """
+    Class to handle MongoDB connections.
+    """
+    client = None
+
+    def __init__(self, database_name=DATABASE_NAME) -> None:
         try:
-            # Get fresh URI from environment (loaded from .env above)
-            mongo_url = os.getenv("MONGODB_URL")
+            if MongoDBClient.client is None:
+                mongo_db_url = os.getenv(MONGODB_URL_KEY)
+                if mongo_db_url is None:
+                    raise Exception(f"Environment key: {MONGODB_URL_KEY} is not set.")
+                
+                # Masking for logs
+                if "@" in mongo_db_url:
+                    masked_url = mongo_db_url.split("@")[0] + "@***"
+                else:
+                    masked_url = mongo_db_url[:20] + "..."
+                logging.info(f"Connecting to MongoDB: {masked_url}")
+
+                MongoDBClient.client = pymongo.MongoClient(mongo_db_url, serverSelectionTimeoutMS=5000)
+                MongoDBClient.client.admin.command('ping') # Verify connection
+                logging.info("MongoDB connection successful (ping verified).")
             
-            if not mongo_url:
-                raise ValueError("MONGODB_URL environment variable not found in .env!")
-            
-            # Debug: log the URI (mask password)
-            masked_uri = mongo_url.split('@')[0] + '@***' if '@' in mongo_url else mongo_url[:20] + '...'
-            logging.info(f"Connecting with URI: {masked_uri}")
-            
-            self.mongo_url = mongo_url
-            self.database_name = database_name
-            
-            # Create connection
-            self.client = pymongo.MongoClient(self.mongo_url, serverSelectionTimeoutMS=5000)
-            self.client.admin.command('ping')
-            logging.info(f"MongoDB connection successful to {database_name}")
-            
-            # Access database
+            self.client = MongoDBClient.client
             self.database = self.client[database_name]
-            
+            self.database_name = database_name
         except Exception as e:
-            logging.error(f"MongoDB connection failed: {e}")
             raise MyException(e, sys)
-    
-    def __getitem__(self, key):
-        """Allow accessing collections."""
-        return self.database[key]
-    
-    def close(self):
-        """Close MongoDB connection."""
-        if self.client:
-            self.client.close()
-            logging.info("MongoDB connection closed")

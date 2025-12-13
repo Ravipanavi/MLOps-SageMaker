@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: vehicle_insurance_prediction
+Version: 0.0.1
+Author: Ravi
+Author-email: ravipanavir@gmail.com
+Requires-Dist: dill
+Requires-Dist: PyYAML
+Requires-Dist: pymongo
+Requires-Dist: boto3
+Requires-Dist: joblib
+Dynamic: author
+Dynamic: author-email
+Dynamic: requires-dist

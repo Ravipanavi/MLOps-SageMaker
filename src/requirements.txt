@@ -1,23 +1,7 @@
-ipykernel
-pandas
-numpy
-matplotlib
-plotly
-seaborn
-scikit-learn
-pymongo
-from_root
+# minimal requirements for SageMaker training environment
 dill
-certifi
 PyYAML
+pymongo
 boto3
-mypy-boto3-s3
-botocore
-fastapi
-python-multipart
-uvicorn
-jinja2
-prometheus-fastapi-instrumentator
-imblearn
-python-dotenv
--e .
+joblib
+imbalanced-learn==0.10.1

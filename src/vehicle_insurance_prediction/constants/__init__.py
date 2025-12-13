@@ -1,0 +1,5 @@
+import os
+
+DATABASE_NAME = "proj1"
+COLLECTION_NAME = "Proj1-Data"
+MONGODB_URL_KEY = "MONGO_DB_URL"

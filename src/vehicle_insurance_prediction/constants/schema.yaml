@@ -1,0 +1,39 @@
+columns:
+  - name: Gender
+    dtype: object
+  - name: Age
+    dtype: int64
+  - name: Driving_License
+    dtype: int64
+  - name: Region_Code
+    dtype: float64
+  - name: Previously_Insured
+    dtype: int64
+  - name: Vehicle_Age
+    dtype: object
+  - name: Vehicle_Damage
+    dtype: object
+  - name: Annual_Premium
+    dtype: float64
+  - name: Policy_Sales_Channel
+    dtype: float64
+  - name: Vintage
+    dtype: int64
+  - name: Response
+    dtype: int64
+
+numerical_columns:
+  - Age
+  - Region_Code
+  - Annual_Premium
+  - Policy_Sales_Channel
+  - Vintage
+
+categorical_columns:
+  - Gender
+  - Driving_License
+  - Previously_Insured
+  - Vehicle_Age
+  - Vehicle_Damage
+
+target_column: Response
